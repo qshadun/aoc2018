@@ -1,6 +1,6 @@
-use std::fs::read_to_string;
 use lazy_static::lazy_static;
 use regex::Regex;
+use std::fs::read_to_string;
 
 fn main() {
     let input = read_to_string("inputs/input10.txt").unwrap();
@@ -10,7 +10,6 @@ fn main() {
     }
     let mut board = Board::new(points);
     for i in 0..1000000 {
-        
         if board.print() {
             println!("**** at time {} ****", i);
             break;
@@ -18,7 +17,6 @@ fn main() {
 
         board.move_points();
     }
-
 }
 
 #[derive(Debug)]
@@ -28,7 +26,7 @@ struct Board {
 
 impl Board {
     fn new(points: Vec<Point>) -> Self {
-        Self{ points }
+        Self { points }
     }
 
     fn move_points(&mut self) {
@@ -49,7 +47,12 @@ impl Board {
             min_y = min_y.min(p.y);
             max_y = max_y.max(p.y);
         }
-        Bound { min_x, max_x, min_y, max_y }
+        Bound {
+            min_x,
+            max_x,
+            min_y,
+            max_y,
+        }
     }
 
     fn print(&self) -> bool {
@@ -85,13 +88,13 @@ impl Bound {
     }
 
     fn height(&self) -> usize {
-        (self.max_y - self.min_y + 1) as usize 
+        (self.max_y - self.min_y + 1) as usize
     }
 
     fn normal_x(&self, x: i32) -> usize {
         (x - self.min_x) as usize
     }
-    
+
     fn normal_y(&self, y: i32) -> usize {
         (y - self.min_y) as usize
     }
@@ -108,11 +111,14 @@ struct Point {
 impl Point {
     fn from_str(line: &str) -> Self {
         lazy_static! {
-            static ref RE: Regex = Regex::new(r"(?x)
+            static ref RE: Regex = Regex::new(
+                r"(?x)
                 position=<\s*(?P<x>[-0-9]+),\s*(?P<y>[-0-9]+)>
                 \s+
                 velocity=<\s*(?P<vx>[-0-9]+),\s*(?P<vy>[-0-9]+)>
-            ").unwrap();
+            "
+            )
+            .unwrap();
         }
         let caps = RE.captures(line).unwrap();
         Point {
