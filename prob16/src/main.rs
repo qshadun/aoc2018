@@ -138,10 +138,6 @@ fn part1(input_lines: &Vec<&str>) {
     }
     println!("{}", ans);
 }
-fn check_op(input: &str, instruction: &str, output: &str) -> bool {
-
-    false
-}
 
 fn parse_register(line: &str) -> [usize; 4] {
     lazy_static! {
