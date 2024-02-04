@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap};
 use std::fs::read_to_string;
 
 fn main() {
@@ -11,7 +11,6 @@ fn main() {
     ]);
 
     let mut positions = vec![];
-    let mut m: HashMap<(i32, i32), HashSet<(i32, i32)>> = HashMap::new();
     let mut distances: HashMap<(i32, i32), i32> = HashMap::new();
     let (mut x, mut y) = (5000, 5000);
     let (mut prev_x, mut prev_y) = (x, y);
@@ -25,7 +24,6 @@ fn main() {
                 let (dx, dy) = *deltas.get(&c).unwrap();
                 x += dx;
                 y += dy;
-                m.entry((x, y)).or_default().insert((prev_x, prev_y));
                 if !distances.contains_key(&(x, y)) {
                     distances.insert((x, y), distances.get(&(prev_x, prev_y)).unwrap() + 1);
                 } else {
