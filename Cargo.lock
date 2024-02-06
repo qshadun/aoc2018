@@ -104,6 +104,14 @@ name = "prob22"
 version = "0.1.0"
 
 [[package]]
+name = "prob23"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "regex",
+]
+
+[[package]]
 name = "prob3"
 version = "0.1.0"
 
