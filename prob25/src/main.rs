@@ -1,19 +1,18 @@
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 use std::fs::read_to_string;
 
 fn main() {
     let input = read_to_string("inputs/input25.txt").unwrap();
-    let points: HashSet<Point> = input.lines().map(|line| Point::new(line)).collect();
+    let points: Vec<Point> = input.lines().map(|line| Point::new(line)).collect();
     let mut part1 = 0;
 
-    let mut remain_points = points.clone();
+    let mut remain_points = points;
     let mut q: VecDeque<Point> = VecDeque::new();
     while !remain_points.is_empty() {
-        let p = remain_points.iter().next().unwrap().clone();
-        remain_points.retain(|&x| x != p);
-        q.push_back(p);
+        q.push_back(remain_points[0]);
+        remain_points = remain_points.split_off(1);
         while let Some(p) = q.pop_front() {
-            let (connected, not_connected) = remain_points.iter().partition(|x| x.dist(&p) <= 3);
+            let (connected, not_connected) = remain_points.into_iter().partition(|x| x.dist(&p) <= 3);
             for c in connected {
                 q.push_back(c);
             }
