@@ -217,18 +217,8 @@ impl Game {
                 unit_dead = true;
             }
         }
-        self.immune_system = self
-            .immune_system
-            .iter()
-            .filter(|g| g.units > 0)
-            .map(|g| g.clone())
-            .collect();
-        self.infection = self
-            .infection
-            .iter()
-            .filter(|g| g.units > 0)
-            .map(|g| g.clone())
-            .collect();
+        self.immune_system.retain(|g| g.units > 0);
+        self.infection.retain(|g| g.units > 0);
         unit_dead
     }
 
@@ -253,7 +243,7 @@ impl Game {
             let infection_target = Self::select_target(&self.infection, &self.immune_system);
             if !self.attack(immune_target, infection_target) {
                 println!("tied");
-                break;
+                return;
             }
         }
         if self.immune_system.is_empty() {
