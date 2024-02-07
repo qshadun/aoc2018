@@ -10,10 +10,9 @@ fn main() {
     let mut q: VecDeque<Point> = VecDeque::new();
     while !remain_points.is_empty() {
         let p = remain_points.iter().next().unwrap().clone();
-        q.push_back(p.clone());
         remain_points.retain(|&x| x != p);
-        while !q.is_empty() {
-            let p = q.pop_front().unwrap();
+        q.push_back(p);
+        while let Some(p) = q.pop_front() {
             let (connected, not_connected) = remain_points.iter().partition(|x| x.dist(&p) <= 3);
             for c in connected {
                 q.push_back(c);
