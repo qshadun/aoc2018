@@ -25,9 +25,9 @@ fn main() -> Result<()> {
     // collect events
     let mut events: Vec<Event> = vec![];
     for line in input.lines() {
-        let event = line.parse().or_else(|err| {
-            err!("failed to parse '{:?}': {}", line, err)
-        })?;
+        let event = line
+            .parse()
+            .or_else(|err| err!("failed to parse '{:?}': {}", line, err))?;
         events.push(event);
     }
     // let mut events:Vec<Event> = input.lines().map(|line| line.parse().or_else(|err| err!("failed to parse '{:?}': {}", line, err))).collect();
@@ -71,9 +71,7 @@ fn main() -> Result<()> {
 fn part1(minutes_asleep: &GuardSleepFrequency) -> Result<()> {
     let (&sleepiest, _) = minutes_asleep
         .iter()
-        .max_by_key(|&(_, ref freqs)| -> u32 {
-            freqs.iter().sum()
-        })
+        .max_by_key(|&(_, ref freqs)| -> u32 { freqs.iter().sum() })
         // unwrap is OK since we're guaranteed to have at least one event
         .unwrap();
     let minute = match sleepiest_minute(minutes_asleep, sleepiest) {
@@ -110,10 +108,7 @@ fn part2(minutes_asleep: &GuardSleepFrequency) -> Result<()> {
 }
 
 /// Return the minute that the given guard slept the most.
-fn sleepiest_minute(
-    minutes_asleep: &GuardSleepFrequency,
-    guard_id: GuardID,
-) -> Option<u32> {
+fn sleepiest_minute(minutes_asleep: &GuardSleepFrequency, guard_id: GuardID) -> Option<u32> {
     let (sleepiest_minute, ..) = minutes_asleep[&guard_id]
         .iter()
         .enumerate()
@@ -139,7 +134,10 @@ struct MinutesAsleepIter<'a> {
 
 impl<'a> MinutesAsleepIter<'a> {
     fn new(events: &'a [Event]) -> MinutesAsleepIter<'a> {
-        MinutesAsleepIter { events: events.iter(), fell_asleep: None }
+        MinutesAsleepIter {
+            events: events.iter(),
+            fell_asleep: None,
+        }
     }
 }
 
@@ -206,7 +204,8 @@ impl FromStr for Event {
 
     fn from_str(s: &str) -> Result<Event> {
         lazy_static! {
-            static ref RE: Regex = Regex::new(r"(?x)
+            static ref RE: Regex = Regex::new(
+                r"(?x)
                 \[
                     (?P<year>[0-9]{4})-(?P<month>[0-9]{2})-(?P<day>[0-9]{2})
                     \s+
@@ -214,7 +213,9 @@ impl FromStr for Event {
                 \]
                 \s+
                 (?:Guard\ \#(?P<id>[0-9]+)\ begins\ shift|(?P<sleep>.+))
-            ").unwrap();
+            "
+            )
+            .unwrap();
         }
 
         let caps = match RE.captures(s) {
@@ -228,16 +229,17 @@ impl FromStr for Event {
             hour: caps["hour"].parse()?,
             minute: caps["minute"].parse()?,
         };
-        let kind =
-            if let Some(m) = caps.name("id") {
-                EventKind::StartShift { guard_id: m.as_str().parse()? }
-            } else if &caps["sleep"] == "falls asleep" {
-                EventKind::Asleep
-            } else if &caps["sleep"] == "wakes up" {
-                EventKind::WakeUp
-            } else {
-                return err!("could not determine event kind")
-            };
+        let kind = if let Some(m) = caps.name("id") {
+            EventKind::StartShift {
+                guard_id: m.as_str().parse()?,
+            }
+        } else if &caps["sleep"] == "falls asleep" {
+            EventKind::Asleep
+        } else if &caps["sleep"] == "wakes up" {
+            EventKind::WakeUp
+        } else {
+            return err!("could not determine event kind");
+        };
         Ok(Event { datetime, kind })
     }
 }

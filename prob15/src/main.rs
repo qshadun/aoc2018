@@ -1,4 +1,8 @@
-use std::{collections::{HashMap, HashSet}, hash::Hash, fs::read_to_string};
+use std::{
+    collections::{HashMap, HashSet},
+    fs::read_to_string,
+    hash::Hash,
+};
 
 fn main() {
     let mut elf_power = 3;
@@ -11,13 +15,12 @@ fn main() {
             break;
         }
     }
-    
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 struct Coordinate {
-    x: usize,  // row
-    y: usize,  // col
+    x: usize, // row
+    y: usize, // col
 }
 
 impl Coordinate {
@@ -36,7 +39,12 @@ struct Npc {
 
 impl Npc {
     fn new(tp: char, id: usize, coord: Coordinate, hp: i32) -> Self {
-        Self { tp: tp, id: id, coord: coord, hp: hp }
+        Self {
+            tp: tp,
+            id: id,
+            coord: coord,
+            hp: hp,
+        }
     }
 }
 
@@ -44,7 +52,7 @@ impl Npc {
 struct Game {
     board: Vec<Vec<char>>,
     npcs: HashMap<Coordinate, Npc>,
-    npc_position: HashMap<usize, Coordinate>,  // id to coord
+    npc_position: HashMap<usize, Coordinate>, // id to coord
     turn: usize,
     elf_count: i32,
     goblin_count: i32,
@@ -78,10 +86,18 @@ impl Game {
             }
             board.push(row);
         }
-        Self { board: board, npcs: npcs, npc_position: npc_position, turn: 0, elf_count: elf_count, goblin_count: goblin_count, elf_power }
+        Self {
+            board: board,
+            npcs: npcs,
+            npc_position: npc_position,
+            turn: 0,
+            elf_count: elf_count,
+            goblin_count: goblin_count,
+            elf_power,
+        }
     }
 
-    fn play(&mut self) -> bool{
+    fn play(&mut self) -> bool {
         loop {
             let mut npc_ids: Vec<usize> = self.npc_position.keys().map(|id| *id).collect();
             npc_ids.sort_by_key(|id| self.npc_position.get(id).unwrap());
@@ -116,10 +132,11 @@ impl Game {
                     } else {
                         targe_npc.hp -= self.elf_power;
                     }
-                    
-                    if targe_npc.hp <= 0 {  // dead
+
+                    if targe_npc.hp <= 0 {
+                        // dead
                         let (x, y) = (targe_npc.coord.x, targe_npc.coord.y);
-                        self.board[x][y] = '.'; 
+                        self.board[x][y] = '.';
                         self.npc_position.remove(&targe_npc.id);
                         if targe_npc.tp == 'G' {
                             self.goblin_count -= 1;
@@ -129,58 +146,57 @@ impl Game {
                             }
                         } else {
                             return false;
-                            
                         }
                         self.npcs.remove(&enenmy_cord);
                     }
-                } 
+                }
             }
             self.turn += 1;
         }
-
     }
 
     fn find_move(&self, npc: &Npc) -> Option<Coordinate> {
-            let mut adj_posotions = self.get_near_coords(npc.coord);
-            adj_posotions = adj_posotions.into_iter().filter(|&co| self.board[co.x][co.y] == '.').collect();
-            
-            if adj_posotions.is_empty() {
-                return None;
-            }
-            if let Some(target_pos) = self.find_target_pos(npc) {
-                let mut visited = HashSet::new();
-                visited.insert(target_pos);
-                let mut positions = vec![target_pos];
-                while !positions.is_empty() {
-                    let mut next_positions = vec![];
-                    let mut reached = vec![];
-                    for co in positions {
-                        let moves = self.get_near_coords(co);
-                        for mv in moves {
-                            
-                            if !visited.contains(&mv) && self.board[mv.x][mv.y] == '.' {
-                                visited.insert(mv);
-                                next_positions.push(mv);
-                                if adj_posotions.contains(&mv) {
-                                    reached.push(mv);
-                                }
+        let mut adj_posotions = self.get_near_coords(npc.coord);
+        adj_posotions = adj_posotions
+            .into_iter()
+            .filter(|&co| self.board[co.x][co.y] == '.')
+            .collect();
+
+        if adj_posotions.is_empty() {
+            return None;
+        }
+        if let Some(target_pos) = self.find_target_pos(npc) {
+            let mut visited = HashSet::new();
+            visited.insert(target_pos);
+            let mut positions = vec![target_pos];
+            while !positions.is_empty() {
+                let mut next_positions = vec![];
+                let mut reached = vec![];
+                for co in positions {
+                    let moves = self.get_near_coords(co);
+                    for mv in moves {
+                        if !visited.contains(&mv) && self.board[mv.x][mv.y] == '.' {
+                            visited.insert(mv);
+                            next_positions.push(mv);
+                            if adj_posotions.contains(&mv) {
+                                reached.push(mv);
                             }
                         }
                     }
-                    if !reached.is_empty() {
-                        reached.sort();
-                        return Some(reached[0]);
-                    }
-                    positions = next_positions;
                 }
-                None
-            } else {
-                None
+                if !reached.is_empty() {
+                    reached.sort();
+                    return Some(reached[0]);
+                }
+                positions = next_positions;
             }
-            
+            None
+        } else {
+            None
+        }
     }
 
-    fn find_target_pos(&self, npc:&Npc) -> Option<Coordinate> {
+    fn find_target_pos(&self, npc: &Npc) -> Option<Coordinate> {
         let enemy_tp = Game::get_enemy_tp(npc.tp);
         let mut visited = HashSet::new();
         visited.insert(npc.coord);
@@ -202,23 +218,22 @@ impl Game {
             positions = next_positions;
         }
         None
-
     }
 
     fn get_near_coords(&self, coord: Coordinate) -> Vec<Coordinate> {
         let mut ans = vec![];
         let (x, y) = (coord.x, coord.y);
         if x > 0 {
-            ans.push(Coordinate::new(x-1, y));
+            ans.push(Coordinate::new(x - 1, y));
         }
         if y > 0 {
             ans.push(Coordinate::new(x, y - 1));
         }
         if y < self.board[x].len() - 1 {
-            ans.push(Coordinate::new(x, y+1));
+            ans.push(Coordinate::new(x, y + 1));
         }
         if x < self.board.len() - 1 {
-            ans.push(Coordinate::new(x+1, y));
+            ans.push(Coordinate::new(x + 1, y));
         }
         ans
     }
@@ -237,11 +252,14 @@ impl Game {
         } else {
             None
         }
-        
     }
 
     fn get_enemy_tp(tp: char) -> char {
-        if tp == 'G' { 'E' } else { 'G' }
+        if tp == 'G' {
+            'E'
+        } else {
+            'G'
+        }
     }
 
     fn print_score(&self, is_last: bool) {
@@ -251,13 +269,7 @@ impl Game {
                 sum_hp += npc.hp;
             }
         }
-        let turn = if is_last {
-            self.turn + 1
-        } else {
-            self.turn
-        };
-        println!("{} * {} = {}", sum_hp, turn , sum_hp as usize * turn )
+        let turn = if is_last { self.turn + 1 } else { self.turn };
+        println!("{} * {} = {}", sum_hp, turn, sum_hp as usize * turn)
     }
 }
-
-

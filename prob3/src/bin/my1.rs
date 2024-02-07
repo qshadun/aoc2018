@@ -1,4 +1,3 @@
-
 use std::fs::read_to_string;
 
 #[derive(Debug)]
@@ -53,7 +52,7 @@ fn part1(input: &str) {
         max_x = max_x.max(rec.x2);
         max_y = max_y.max(rec.y2);
     }
-    
+
     for x in 1..=max_x {
         for y in 1..=max_y {
             let mut cnt: i32 = 0;

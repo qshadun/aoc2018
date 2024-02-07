@@ -17,7 +17,6 @@ struct Game {
 
 impl Game {
     fn from_input(input: &str) -> Self {
-
         let (mut min_x, mut max_x, mut min_y, mut max_y) = (500, 500, i32::MAX, 0);
         let mut walls = vec![];
         for line in input.lines() {
@@ -58,17 +57,13 @@ impl Game {
                 }
             }
         }
-        Self {
-            board,
-            min_x,
-        }
+        Self { board, min_x }
     }
 
     fn print_board(&self) {
         for row in self.board.iter() {
             let line: String = row.iter().collect();
             println!("{}", line);
-
         }
     }
 
@@ -79,15 +74,18 @@ impl Game {
         let num_rows = self.board.len();
         while flowed {
             flowed = false;
-            for row in 0..num_rows-1 {
-                for col in 0..num_cols{
+            for row in 0..num_rows - 1 {
+                for col in 0..num_cols {
                     if self.board[row][col] == '|' {
                         if self.board[row + 1][col] == '.' {
                             self.board[row + 1][col] = '|';
                             flowed = true
                         } else if is_floor(self.board[row + 1][col]) {
                             let mut left = col - 1;
-                            while left >= 0 && self.board[row][left] != '#' && is_floor(self.board[row+1][left+1] ) {
+                            while left >= 0
+                                && self.board[row][left] != '#'
+                                && is_floor(self.board[row + 1][left + 1])
+                            {
                                 if self.board[row][left] == '.' {
                                     self.board[row][left] = '|';
                                     flowed = true;
@@ -95,16 +93,24 @@ impl Game {
                                 left -= 1;
                             }
                             let mut right = col + 1;
-                            while right < num_cols && self.board[row][right] != '#' && is_floor(self.board[row+1][right-1] ) {
+                            while right < num_cols
+                                && self.board[row][right] != '#'
+                                && is_floor(self.board[row + 1][right - 1])
+                            {
                                 if self.board[row][right] == '.' {
                                     self.board[row][right] = '|';
                                     flowed = true;
                                 }
                                 right += 1;
                             }
-                            if left >= 0 && self.board[row][left] == '#' && right < num_cols && self.board[row][right] == '#'
-                                && is_floor(self.board[row+1][left+1]) && is_floor(self.board[row+1][right-1]) {
-                                for col in left+1..right {
+                            if left >= 0
+                                && self.board[row][left] == '#'
+                                && right < num_cols
+                                && self.board[row][right] == '#'
+                                && is_floor(self.board[row + 1][left + 1])
+                                && is_floor(self.board[row + 1][right - 1])
+                            {
+                                for col in left + 1..right {
                                     self.board[row][col] = '~';
                                     flowed = true;
                                 }
@@ -142,8 +148,11 @@ fn is_floor(c: char) -> bool {
 
 fn parse_line(line: &str) -> Vec<Vec<i32>> {
     lazy_static! {
-            static ref RE: Regex = Regex::new(r"(?P<a1>[x|y])=(?P<p1>[\d]+), (?P<a2>[x|y])=(?P<lower>[\d]+)\.\.(?P<upper>[\d]+)").unwrap();
-        }
+        static ref RE: Regex = Regex::new(
+            r"(?P<a1>[x|y])=(?P<p1>[\d]+), (?P<a2>[x|y])=(?P<lower>[\d]+)\.\.(?P<upper>[\d]+)"
+        )
+        .unwrap();
+    }
     let caps = RE.captures(line).unwrap();
     let a1 = &caps["a1"];
     let p1: i32 = caps["p1"].parse().unwrap();

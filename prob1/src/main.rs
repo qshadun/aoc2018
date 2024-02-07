@@ -1,5 +1,5 @@
-use std::fs::read_to_string;
 use std::collections::HashSet;
+use std::fs::read_to_string;
 
 fn main() {
     let input = read_to_string("inputs/input1.txt").unwrap();

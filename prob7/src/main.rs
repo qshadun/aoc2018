@@ -1,4 +1,4 @@
-use std::{fs::read_to_string, collections::HashSet};
+use std::{collections::HashSet, fs::read_to_string};
 
 fn main() {
     let input = read_to_string("inputs/input7.txt").unwrap();
@@ -29,7 +29,7 @@ fn part1(graph: &Vec<Vec<u8>>, all_nodes: &HashSet<u8>) {
 
     while path.len() < all_nodes.len() {
         for i in 0..26 {
-            if indegree[i] == 0 && all_nodes.contains(&(i as u8)) &&!visited.contains(&(i as u8)) {
+            if indegree[i] == 0 && all_nodes.contains(&(i as u8)) && !visited.contains(&(i as u8)) {
                 let i = i as u8;
                 let c = (i + b'A') as char;
                 path.push(c);
@@ -45,7 +45,6 @@ fn part1(graph: &Vec<Vec<u8>>, all_nodes: &HashSet<u8>) {
     println!("{}", ans);
     println!("{}", ans.len());
 }
-
 
 fn part2(graph: &Vec<Vec<u8>>, all_nodes: &HashSet<u8>) {
     let mut indegree = vec![0; 26];
@@ -63,10 +62,9 @@ fn part2(graph: &Vec<Vec<u8>>, all_nodes: &HashSet<u8>) {
     let mut cur_time = 0;
     while path.len() < all_nodes.len() {
         let mut has_nodes = false;
-        
+
         for i in 0..26 {
-            
-            if indegree[i] == 0 && all_nodes.contains(&(i as u8)) &&!visited.contains(&(i as u8)) {
+            if indegree[i] == 0 && all_nodes.contains(&(i as u8)) && !visited.contains(&(i as u8)) {
                 has_nodes = true;
                 let i = i as u8;
                 let mut found_worker = false;
@@ -82,13 +80,11 @@ fn part2(graph: &Vec<Vec<u8>>, all_nodes: &HashSet<u8>) {
                 if !found_worker {
                     break;
                 }
-                
             }
         }
 
         let has_workers = worker_items.iter().any(|c| c.is_none());
         if !has_workers || !has_nodes {
-                
             cur_time = *worker_finish_times.iter().min().unwrap();
             for i in 0..5 {
                 if worker_finish_times[i] == cur_time {

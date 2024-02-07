@@ -1,7 +1,10 @@
-
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::{fs::read_to_string, collections::{HashMap, HashSet}, hash::Hash};
+use std::{
+    collections::{HashMap, HashSet},
+    fs::read_to_string,
+    hash::Hash,
+};
 
 fn main() {
     let input = read_to_string("inputs/input16.txt").unwrap();
@@ -13,7 +16,10 @@ fn main() {
 fn part2(input_lines: &Vec<&str>) {
     let mut test_program_start = 0;
     for i in 3..input_lines.len() {
-        if input_lines[i].is_empty() && input_lines[i-1].is_empty() && input_lines[i-2].is_empty() {
+        if input_lines[i].is_empty()
+            && input_lines[i - 1].is_empty()
+            && input_lines[i - 2].is_empty()
+        {
             test_program_start = i + 1;
             break;
         }
@@ -24,7 +30,7 @@ fn part2(input_lines: &Vec<&str>) {
         if input_lines[i].starts_with("Before") {
             let reg_input = parse_register(input_lines[i]);
             let instruction = parse_instruction(input_lines[i + 1]);
-            let reg_output = parse_register(input_lines[i +  2]);
+            let reg_output = parse_register(input_lines[i + 2]);
             let mut oprands = [0; 3];
             oprands[..3].copy_from_slice(&instruction[1..4]);
             let opcode = instruction[0];
@@ -71,7 +77,12 @@ fn part2(input_lines: &Vec<&str>) {
     while opcode_to_ops_idx.iter().any(|&x| x == 17) {
         for (ops_idx, d) in indegree.into_iter().enumerate() {
             if d == 1 {
-                let opcode = *ops_idx_to_opcode.get(&ops_idx).unwrap().iter().next().unwrap();
+                let opcode = *ops_idx_to_opcode
+                    .get(&ops_idx)
+                    .unwrap()
+                    .iter()
+                    .next()
+                    .unwrap();
                 opcode_to_ops_idx[opcode] = ops_idx;
 
                 for idx in 0..16 {
@@ -82,25 +93,26 @@ fn part2(input_lines: &Vec<&str>) {
                             indegree[idx] -= 1;
                         }
                     }
-                    
                 }
             }
         }
     }
-    
+
     let mut registers: [usize; 4] = [0, 0, 0, 0];
     for i in test_program_start..input_lines.len() {
         let instruction = parse_instruction(input_lines[i]);
-        
+
         let op = ops[opcode_to_ops_idx[instruction[0]]];
         let mut oprands = [0; 3];
         oprands[..3].copy_from_slice(&instruction[1..4]);
-        
+
         match eval(op, registers, oprands) {
             Ok(result) => {
                 registers = result;
             }
-            Err(_) => {panic!("failed to eval {:?}", instruction); }
+            Err(_) => {
+                panic!("failed to eval {:?}", instruction);
+            }
         }
     }
     println!("{}", registers[0]);
@@ -113,14 +125,14 @@ fn part1(input_lines: &Vec<&str>) {
         if input_lines[i].starts_with("Before") {
             let reg_input = parse_register(input_lines[i]);
             let instruction = parse_instruction(input_lines[i + 1]);
-            let reg_output = parse_register(input_lines[i +  2]);
+            let reg_output = parse_register(input_lines[i + 2]);
             let mut oprands = [0; 3];
             let mut cnt = 0;
             oprands[..3].copy_from_slice(&instruction[1..4]);
             for op in ops {
                 match eval(op, reg_input, oprands) {
                     Ok(result) => {
-                        if result == reg_output { 
+                        if result == reg_output {
                             cnt += 1;
                             if cnt >= 3 {
                                 ans += 1;
@@ -163,88 +175,135 @@ fn parse_instruction(line: &str) -> [usize; 4] {
     [n1, n2, n3, n4]
 }
 
-const ops: [&str; 16] = ["addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"];
+const ops: [&str; 16] = [
+    "addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri",
+    "gtrr", "eqir", "eqri", "eqrr",
+];
 
 fn eval(op: &str, registers: [usize; 4], oprands: [usize; 3]) -> Result<[usize; 4], String> {
     let mut ans = registers.clone();
     let [A, B, C] = oprands;
-    if C > 3 { return Err(format!("invalid register index C {C}")); }
+    if C > 3 {
+        return Err(format!("invalid register index C {C}"));
+    }
     match op {
-        "addr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "addr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] + registers[B];
         }
-        "addi" =>  {
-            if A > 3 { return Err(format!("invalid register index C {A}")); }
+        "addi" => {
+            if A > 3 {
+                return Err(format!("invalid register index C {A}"));
+            }
             ans[C] = registers[A] + B;
         }
-        "mulr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "mulr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] * registers[B];
         }
-        "muli" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
+        "muli" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] * B;
         }
-        "banr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "banr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] & registers[B];
         }
-        "bani" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
+        "bani" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] & B;
         }
-        "borr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "borr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] | registers[B];
         }
-        "bori" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
+        "bori" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] | B;
         }
-        "setr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            
+        "setr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+
             ans[C] = registers[A];
         }
-        "seti" =>  {
+        "seti" => {
             ans[C] = A;
         }
-        "gtir" =>  {
-            
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "gtir" => {
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if A > registers[B] { 1 } else { 0 };
         }
-        "gtri" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            
+        "gtri" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+
             ans[C] = if registers[A] > B { 1 } else { 0 };
         }
-        "gtrr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "gtrr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if registers[A] > registers[B] { 1 } else { 0 };
         }
-        "eqir" =>  {
-            
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "eqir" => {
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if A == registers[B] { 1 } else { 0 };
         }
-        "eqri" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            
+        "eqri" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+
             ans[C] = if registers[A] == B { 1 } else { 0 };
         }
-        "eqrr" =>  {
-            if A > 3 { return Err(format!("invalid register index A {A}")); }
-            if B > 3 { return Err(format!("invalid register index B {B}")); }
+        "eqrr" => {
+            if A > 3 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 3 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if registers[A] == registers[B] { 1 } else { 0 };
         }
-        _ => { return Err(format!("invalid opcode {op}")); }
+        _ => {
+            return Err(format!("invalid opcode {op}"));
+        }
     }
 
     Ok(ans)

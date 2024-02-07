@@ -25,9 +25,10 @@ fn main() {
 }
 
 fn part2(matrix: Vec<Vec<usize>>, X: usize, Y: usize) -> usize {
-    let type_matrix: Vec<Vec<RegionType>> = matrix.iter().map(|row|
-        row.iter().map(|&v| RegionType::from_value(v)).collect()
-    ).collect();
+    let type_matrix: Vec<Vec<RegionType>> = matrix
+        .iter()
+        .map(|row| row.iter().map(|&v| RegionType::from_value(v)).collect())
+        .collect();
     let mut heap = BinaryHeap::new();
     let start_position = Position::new(0, 0, Gear::Torch);
     let target_position = Position::new(X, Y, Gear::Torch);
@@ -51,7 +52,10 @@ fn part2(matrix: Vec<Vec<usize>>, X: usize, Y: usize) -> usize {
             heap.push(Reverse(TimedPosition::new(time + 1, new_pos)));
         }
         let Position { x, y, gear } = position;
-        heap.push(Reverse(TimedPosition::new(time + 7, Position::new(x, y, type_matrix[y][x].switch_gear(gear)))));
+        heap.push(Reverse(TimedPosition::new(
+            time + 7,
+            Position::new(x, y, type_matrix[y][x].switch_gear(gear)),
+        )));
     }
     0
 }
@@ -74,7 +78,6 @@ fn get_move_positions(position: &Position, type_matrix: &Vec<Vec<RegionType>>) -
     }
     ans
 }
-
 
 #[derive(Debug, Eq)]
 struct TimedPosition {
@@ -100,13 +103,11 @@ impl PartialOrd for TimedPosition {
     }
 }
 
-
 impl PartialEq for TimedPosition {
     fn eq(&self, other: &Self) -> bool {
         self.time == other.time
     }
 }
-
 
 #[derive(Debug, Hash, Clone, Copy, PartialEq, Eq)]
 struct Position {
@@ -117,11 +118,7 @@ struct Position {
 
 impl Position {
     fn new(x: usize, y: usize, gear: Gear) -> Position {
-        Self {
-            x,
-            y,
-            gear,
-        }
+        Self { x, y, gear }
     }
 }
 
@@ -145,7 +142,7 @@ impl RegionType {
             x if x == RegionType::Rocky as usize => RegionType::Rocky,
             x if x == RegionType::Wet as usize => RegionType::Wet,
             x if x == RegionType::Narrow as usize => RegionType::Narrow,
-            _ => panic!("wrong region type")
+            _ => panic!("wrong region type"),
         }
     }
 
@@ -171,7 +168,15 @@ impl RegionType {
     }
 }
 
-fn calc_matrix(modulo: usize, x_mul: usize, y_mul: usize, depth: usize, X: usize, Y: usize, enlarge: bool) -> Vec<Vec<usize>> {
+fn calc_matrix(
+    modulo: usize,
+    x_mul: usize,
+    y_mul: usize,
+    depth: usize,
+    X: usize,
+    Y: usize,
+    enlarge: bool,
+) -> Vec<Vec<usize>> {
     let (ROW, COL) = if enlarge {
         let x = X.max(Y) * 2;
         (x, x)
@@ -192,7 +197,8 @@ fn calc_matrix(modulo: usize, x_mul: usize, y_mul: usize, depth: usize, X: usize
             } else if y == 0 {
                 erosion_matrix[y][x] = (x * x_mul + depth) % modulo;
             } else {
-                erosion_matrix[y][x] = (erosion_matrix[y - 1][x] * erosion_matrix[y][x - 1] + depth) % modulo;
+                erosion_matrix[y][x] =
+                    (erosion_matrix[y - 1][x] * erosion_matrix[y][x - 1] + depth) % modulo;
             }
         }
     }

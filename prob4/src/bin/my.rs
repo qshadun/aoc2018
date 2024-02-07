@@ -1,7 +1,7 @@
-use std::{fs::read_to_string, collections::HashMap};
+use std::{collections::HashMap, fs::read_to_string};
 
 #[derive(Debug)]
-enum Event{
+enum Event {
     WakeUp,
     FallAsleep,
     ChangeGuard(u32),
@@ -15,14 +15,14 @@ struct Log<'a> {
     event: Event,
 }
 
-impl <'a> Log<'a>{
+impl<'a> Log<'a> {
     fn from_str(line: &str) -> Log {
         let parts: Vec<_> = line.split(" ").collect();
         let day = parts[0];
         let time_parts: Vec<_> = parts[1].split(":").collect();
         let hour: u32 = time_parts[0].parse().unwrap();
         let minute = time_parts[1];
-        let minute = &minute[..minute.len()-1];
+        let minute = &minute[..minute.len() - 1];
         let minute: u32 = minute.parse().unwrap();
         let event = if parts[2] == "falls" {
             Event::FallAsleep
@@ -38,20 +38,19 @@ impl <'a> Log<'a>{
             day,
             hour,
             minute,
-            event
+            event,
         }
     }
 }
 
 fn main() {
-    
     let input = read_to_string("inputs/input4.txt").unwrap();
     let mut logs: Vec<Log> = input.lines().map(Log::from_str).collect();
     logs.sort_by_key(|log| (log.day, log.hour, log.minute));
     let mut sleeping_times: HashMap<u32, Vec<u32>> = HashMap::new();
     let mut cur_guard = 0;
     let mut sleep = 0;
-    
+
     for log in logs {
         match log.event {
             Event::ChangeGuard(g) => cur_guard = g,
@@ -81,7 +80,12 @@ fn part1(sleeping_times: &HashMap<u32, Vec<u32>>) {
     }
 
     let minutes = sleeping_times.get(&most_sleep_guard).unwrap();
-    let most_frequent_minute = minutes.iter().enumerate().max_by(|(_, a), (_, b) | a.cmp(b)).map(|(index, _)| index).unwrap();
+    let most_frequent_minute = minutes
+        .iter()
+        .enumerate()
+        .max_by(|(_, a), (_, b)| a.cmp(b))
+        .map(|(index, _)| index)
+        .unwrap();
     let ans = most_frequent_minute * most_sleep_guard as usize;
     println!("{} {} {}", ans, most_sleep_guard, most_frequent_minute);
 }
@@ -101,5 +105,3 @@ fn part2(sleeping_times: &HashMap<u32, Vec<u32>>) {
     }
     println!("{}", most_frequent_minute * most_frequent_guard as usize);
 }
-
-

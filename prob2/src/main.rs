@@ -35,8 +35,8 @@ fn part2(input: &str) {
     let lines: Vec<_> = input.lines().collect();
     for i in 0..lines.len() {
         let l1 = lines[i].as_bytes();
-        
-        for j in i+1..lines.len() {
+
+        for j in i + 1..lines.len() {
             let l2 = lines[j].as_bytes();
             if l2.len() != l1.len() {
                 continue;
@@ -55,7 +55,11 @@ fn part2(input: &str) {
             }
             if diff_count == 1 {
                 println!("{} {}", lines[i], lines[j]);
-                println!("{}{}", &(lines[i])[0..diff_pos], &(lines[i])[diff_pos+1..]);
+                println!(
+                    "{}{}",
+                    &(lines[i])[0..diff_pos],
+                    &(lines[i])[diff_pos + 1..]
+                );
                 return ();
             }
         }

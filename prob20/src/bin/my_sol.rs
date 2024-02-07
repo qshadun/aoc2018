@@ -97,7 +97,7 @@ impl Maze {
                     dist += branch_len;
                 }
                 Part::BranchSplit => {
-                    return (dist, i+1);
+                    return (dist, i + 1);
                 }
                 Part::BranchEnd => {
                     return (dist, i);
@@ -150,7 +150,7 @@ enum Part {
 }
 
 fn parse(regex: &str) -> Vec<Part> {
-    let chars: Vec<char> = (&regex[1..regex.len()-1]).chars().collect();
+    let chars: Vec<char> = (&regex[1..regex.len() - 1]).chars().collect();
     let mut parts = vec![];
     let mut i = 0;
     while i < chars.len() {
@@ -186,7 +186,6 @@ fn parse(regex: &str) -> Vec<Part> {
                         }
                     }
                     parts.push(Part::BranchSplit);
-
                 }
                 x => panic!("illega character {}", x),
             }
@@ -195,5 +194,3 @@ fn parse(regex: &str) -> Vec<Part> {
     }
     parts
 }
-
-

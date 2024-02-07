@@ -7,13 +7,12 @@ fn main() {
         let row: String = line.iter().collect();
         println!("{}", row);
     }
-    for cart in game.carts.iter(){
+    for cart in game.carts.iter() {
         println!("{:?}", cart);
     }
     let res = game.play2();
     println!("{:?}", res);
 }
-
 
 #[derive(Debug, Clone, Copy)]
 enum Turn {
@@ -31,7 +30,6 @@ impl Turn {
         }
     }
 }
-
 
 #[derive(Debug, Clone, Copy)]
 enum Direction {
@@ -58,7 +56,7 @@ impl Direction {
 }
 
 #[derive(Debug, Clone, Copy)]
-struct Cart{
+struct Cart {
     pos: (usize, usize),
     direction: Direction,
     turn: Turn,
@@ -67,7 +65,12 @@ struct Cart{
 
 impl Cart {
     fn new(pos: (usize, usize), direction: Direction) -> Self {
-        Self { pos, direction, turn: Turn::Left, crashed: false }
+        Self {
+            pos,
+            direction,
+            turn: Turn::Left,
+            crashed: false,
+        }
     }
 }
 
@@ -97,10 +100,7 @@ impl Game {
             }
             board.push(row);
         }
-        Self {
-            board,
-            carts,
-        }
+        Self { board, carts }
     }
 
     fn play(&mut self) -> (usize, usize) {
@@ -111,14 +111,14 @@ impl Game {
                 let (row, col) = cart.pos;
                 if self.board[row][col] == '+' {
                     cart.direction = Self::do_turn(cart.direction, cart.turn);
-                    cart.turn = cart.turn.next_turn(); 
-                } else if self.board[row][col] == '/' ||  self.board[row][col] == '\\' {
-                    cart.direction = Self::turn_corner( self.board[row][col], cart.direction); 
+                    cart.turn = cart.turn.next_turn();
+                } else if self.board[row][col] == '/' || self.board[row][col] == '\\' {
+                    cart.direction = Self::turn_corner(self.board[row][col], cart.direction);
                 }
                 cart.pos = Self::next_position(cart.pos, cart.direction);
                 self.carts[i] = cart;
                 if self.check_collision(i) {
-                    return (cart.pos.1, cart.pos.0)
+                    return (cart.pos.1, cart.pos.0);
                 }
             }
         }
@@ -135,13 +135,17 @@ impl Game {
 
     fn play2(&mut self) -> (usize, usize) {
         loop {
-            
-            self.carts = self.carts.iter().filter(|c| !c.crashed).map(|c| *c).collect();
+            self.carts = self
+                .carts
+                .iter()
+                .filter(|c| !c.crashed)
+                .map(|c| *c)
+                .collect();
             if self.carts.len() == 1 {
                 return (self.carts[0].pos.1, self.carts[0].pos.0);
             }
             self.carts.sort_by_key(|c| c.pos);
-            
+
             for i in 0..self.carts.len() {
                 let mut cart = self.carts[i];
                 if cart.crashed {
@@ -150,9 +154,9 @@ impl Game {
                 let (row, col) = cart.pos;
                 if self.board[row][col] == '+' {
                     cart.direction = Self::do_turn(cart.direction, cart.turn);
-                    cart.turn = cart.turn.next_turn(); 
-                } else if self.board[row][col] == '/' ||  self.board[row][col] == '\\' {
-                    cart.direction = Self::turn_corner( self.board[row][col], cart.direction); 
+                    cart.turn = cart.turn.next_turn();
+                } else if self.board[row][col] == '/' || self.board[row][col] == '\\' {
+                    cart.direction = Self::turn_corner(self.board[row][col], cart.direction);
                 }
                 cart.pos = Self::next_position(cart.pos, cart.direction);
                 self.carts[i] = cart;
@@ -169,7 +173,6 @@ impl Game {
                 break;
             }
         }
-
     }
 
     fn next_position(cur_pos: (usize, usize), direction: Direction) -> (usize, usize) {
@@ -184,33 +187,25 @@ impl Game {
 
     fn do_turn(direction: Direction, turn: Turn) -> Direction {
         match direction {
-            Direction::Up => {
-                match turn {
-                    Turn::Left => Direction::Left,
-                    Turn::Straight => Direction::Up,
-                    Turn::Right => Direction::Right,
-                }
+            Direction::Up => match turn {
+                Turn::Left => Direction::Left,
+                Turn::Straight => Direction::Up,
+                Turn::Right => Direction::Right,
             },
-            Direction::Down => {
-                match turn {
-                    Turn::Left => Direction::Right,
-                    Turn::Straight => Direction::Down,
-                    Turn::Right => Direction::Left,
-                }
+            Direction::Down => match turn {
+                Turn::Left => Direction::Right,
+                Turn::Straight => Direction::Down,
+                Turn::Right => Direction::Left,
             },
-            Direction::Left => {
-                match turn {
-                    Turn::Left => Direction::Down,
-                    Turn::Straight => Direction::Left,
-                    Turn::Right => Direction::Up,
-                }
+            Direction::Left => match turn {
+                Turn::Left => Direction::Down,
+                Turn::Straight => Direction::Left,
+                Turn::Right => Direction::Up,
             },
-            Direction::Right => {
-                match turn {
-                    Turn::Left => Direction::Up,
-                    Turn::Straight => Direction::Right,
-                    Turn::Right => Direction::Down,
-                }
+            Direction::Right => match turn {
+                Turn::Left => Direction::Up,
+                Turn::Straight => Direction::Right,
+                Turn::Right => Direction::Down,
             },
         }
     }
@@ -232,5 +227,4 @@ impl Game {
             }
         }
     }
-    
 }

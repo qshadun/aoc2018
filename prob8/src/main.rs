@@ -13,7 +13,7 @@ fn part1(input: &Vec<usize>) {
     let mut ans = 0;
     stack.push((input[0], input[1]));
     let mut i = 2;
-    while let Some((children_size, meta_size))= stack.pop() {
+    while let Some((children_size, meta_size)) = stack.pop() {
         if children_size > 0 {
             stack.push((children_size - 1, meta_size));
             stack.push((input[i], input[i + 1]));
@@ -29,7 +29,7 @@ fn part1(input: &Vec<usize>) {
 }
 
 fn part2(input: &Vec<usize>) {
-    let mut stack: Vec<Node> = vec![]; 
+    let mut stack: Vec<Node> = vec![];
     stack.push(Node::new(input[0], input[1]));
     let mut i = 2;
     while i < input.len() {
@@ -42,7 +42,7 @@ fn part2(input: &Vec<usize>) {
                 }
             } else {
                 for j in 0..cur.meta_size {
-                    let ci = input[i+j];
+                    let ci = input[i + j];
                     if ci == 0 || ci > cur.children_val.len() {
                         continue;
                     } else {
@@ -60,11 +60,10 @@ fn part2(input: &Vec<usize>) {
             parent.unhandled_children_size -= 1;
             parent.children_val.push(val);
         } else {
-            stack.push(Node::new(input[i], input[i+1]));
+            stack.push(Node::new(input[i], input[i + 1]));
             i += 2;
         }
     }
-    
 }
 
 struct Node {
@@ -77,10 +76,10 @@ struct Node {
 impl Node {
     fn new(children_size: usize, meta_size: usize) -> Self {
         Self {
-            children_size, 
+            children_size,
             unhandled_children_size: children_size,
-            meta_size, 
-            children_val: vec![]
+            meta_size,
+            children_val: vec![],
         }
     }
 }

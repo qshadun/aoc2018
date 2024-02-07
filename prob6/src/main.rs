@@ -1,11 +1,11 @@
-use std::{fs::read_to_string, collections::HashSet, collections::HashMap};
-
+use std::{collections::HashMap, collections::HashSet, fs::read_to_string};
 
 fn main() {
     let input = read_to_string("inputs/input6.txt").unwrap();
-    let coords: Vec<Coordinate> = input.lines().map(|line| {
-        Coordinate::from_str(line)
-    }).collect();
+    let coords: Vec<Coordinate> = input
+        .lines()
+        .map(|line| Coordinate::from_str(line))
+        .collect();
     let mut grid = Grid::new(coords);
     grid.find_finite();
     part1(&grid);
@@ -31,7 +31,7 @@ fn part2(grid: &Grid) {
     let mut size = 0;
     for x in -bound..=bound {
         for y in -bound..=bound {
-            if grid.distance_sum(Coordinate {x, y}) < 10000 {
+            if grid.distance_sum(Coordinate { x, y }) < 10000 {
                 size += 1;
             }
         }
@@ -57,11 +57,10 @@ impl Coordinate {
         (self.x - other.x).abs() + (self.y - other.y).abs()
     }
 
-    fn border(self, step: i32) -> impl Iterator<Item=Coordinate> {
-        (self.x - step ..=self.x + step)
-            .flat_map(move |x| {
-                (self.y - step..=self.y +step).map(move |y| Coordinate {x, y})
-            }).filter(move |&c| self.distance(c) == step)
+    fn border(self, step: i32) -> impl Iterator<Item = Coordinate> {
+        (self.x - step..=self.x + step)
+            .flat_map(move |x| (self.y - step..=self.y + step).map(move |y| Coordinate { x, y }))
+            .filter(move |&c| self.distance(c) == step)
     }
 }
 
@@ -113,7 +112,6 @@ impl Grid {
             }
         }
     }
-
 
     fn closest_location(&self, c: Coordinate) -> Option<Coordinate> {
         let mut min_cor = self.locations[0];

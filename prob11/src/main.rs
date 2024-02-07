@@ -13,7 +13,8 @@ fn part2(grid: &Vec<Vec<i32>>) {
     let mut prefix_sum = vec![vec![0; 301]; 301];
     for x in 1..=300 {
         for y in 1..=300 {
-            prefix_sum[y][x] = grid[y][x] + prefix_sum[y][x - 1] + prefix_sum[y-1][x] - prefix_sum[y-1][x-1];
+            prefix_sum[y][x] =
+                grid[y][x] + prefix_sum[y][x - 1] + prefix_sum[y - 1][x] - prefix_sum[y - 1][x - 1];
         }
     }
     let mut max_x = 1;
@@ -24,15 +25,17 @@ fn part2(grid: &Vec<Vec<i32>>) {
         for y in 1..=300 {
             let cur_max_size = 300 - x.max(y) + 1;
             for size in 0..cur_max_size {
-                let pow = prefix_sum[y+size][x+size] - prefix_sum[y+size][x-1] - prefix_sum[y-1][x+size] + prefix_sum[y-1][x-1];
+                let pow = prefix_sum[y + size][x + size]
+                    - prefix_sum[y + size][x - 1]
+                    - prefix_sum[y - 1][x + size]
+                    + prefix_sum[y - 1][x - 1];
                 if pow > max_pow {
                     max_pow = pow;
                     max_x = x;
                     max_y = y;
-                    max_size = size+1;
+                    max_size = size + 1;
                 }
             }
-
         }
     }
     println!("{},{},{},{}", max_x, max_y, max_size, max_pow);
@@ -47,17 +50,15 @@ fn part1(grid: &Vec<Vec<i32>>) {
             let mut pow = 0;
             for i in 0..3 {
                 for j in 0..3 {
-                    pow += grid[y+j][x+i];
+                    pow += grid[y + j][x + i];
                 }
             }
             if pow > max_pow {
                 max_pow = pow;
                 max_x = x;
                 max_y = y;
-                
             }
         }
-        
     }
     println!("{},{},{}", max_x, max_y, max_pow);
 }

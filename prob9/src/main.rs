@@ -1,10 +1,9 @@
 use core::num;
-use std::{rc::Rc, cell::RefCell};
+use std::{cell::RefCell, rc::Rc};
 
 fn main() {
     //491 players; last marble is worth 71058 points
-    
-    
+
     // part1(491, 71058);
     part2(491, 7105800);
 }
@@ -33,7 +32,11 @@ struct Marble {
 
 impl Marble {
     fn new(val: MarbleValue) -> Self {
-        Self { val: val, prev: 0, next: 0 }
+        Self {
+            val: val,
+            prev: 0,
+            next: 0,
+        }
     }
 }
 
@@ -87,8 +90,6 @@ impl Circle {
         }
         id
     }
-
-
 }
 
 use std::fmt;
@@ -114,8 +115,7 @@ fn part2(num_of_players: usize, last_marble: usize) -> usize {
             let new_id = circle.add_marble(marble_value);
             let mut before = circle.clockwise(1);
             circle.insert_after(new_id, before);
-            circle.current= new_id;
-
+            circle.current = new_id;
         } else {
             let cur_player = marble_value % num_of_players;
             let remove_id = circle.counter_clockwise(7);
@@ -123,7 +123,6 @@ fn part2(num_of_players: usize, last_marble: usize) -> usize {
             circle.remove(remove_id);
             circle.current = circle.marbles[remove_id].next;
         }
-        
     }
 
     let ans = scores.iter().max().unwrap();
@@ -148,7 +147,6 @@ fn part1(num_of_players: usize, last_marble: usize) -> usize {
             board.remove(remove_pos);
             cur_pos = remove_pos;
         }
-        
     }
     let ans = scores.iter().max().unwrap();
     println!("{}", ans);
@@ -167,7 +165,7 @@ mod tests {
         17 players; last marble is worth 1104 points: high score is 2764
         21 players; last marble is worth 6111 points: high score is 54718
         30 players; last marble is worth 5807 points: high score is 37305
-    
+
          */
         assert_eq!(part1(9, 25), 32);
         assert_eq!(part1(10, 1618), 8317);

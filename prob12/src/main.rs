@@ -1,23 +1,23 @@
 use std::{collections::HashMap, os::macos::raw::stat};
 
 fn main() {
-//     let state = "#..#.#..##......###...###";
-//     let rules_str = "...## => #
-// ..#.. => #
-// .#... => #
-// .#.#. => #
-// .#.## => #
-// .##.. => #
-// .#### => #
-// #.#.# => #
-// #.### => #
-// ##.#. => #
-// ##.## => #
-// ###.. => #
-// ###.# => #
-// ####. => #";
+    //     let state = "#..#.#..##......###...###";
+    //     let rules_str = "...## => #
+    // ..#.. => #
+    // .#... => #
+    // .#.#. => #
+    // .#.## => #
+    // .##.. => #
+    // .#### => #
+    // #.#.# => #
+    // #.### => #
+    // ##.#. => #
+    // ##.## => #
+    // ###.. => #
+    // ###.# => #
+    // ####. => #";
     let state = "..#..###...#####.#.#...####.#..####..###.##.#.#.##.#....#....#.####...#....###.###..##.#....#######";
-        let rules_str = "..### => .
+    let rules_str = "..### => .
 .##.# => #
 #..#. => .
 #.#.# => #
@@ -49,10 +49,10 @@ fn main() {
 ....# => .
 .#.## => #
 ###.# => #";
-    
+
     let rules = Rules::from_rules_str(rules_str);
     println!("{:?}", rules);
-    
+
     let mut state: Vec<char> = state.chars().collect();
     let mut cur_left = 0;
     for i in 0..1000 {
@@ -67,15 +67,26 @@ fn main() {
         next_state.push(rules.next_gen(&k));
         let k = format!(".{}{}{}{}", state[0], state[1], state[2], state[3]);
         next_state.push(rules.next_gen(&k));
-        for j in 2..cur_len-2 {
-            let k: String = (&state[j-2..j+3]).iter().collect();
+        for j in 2..cur_len - 2 {
+            let k: String = (&state[j - 2..j + 3]).iter().collect();
             next_state.push(rules.next_gen(&k));
         }
-        let k = format!("{}{}{}{}.", state[cur_len-4], state[cur_len-3], state[cur_len-2], state[cur_len-1]);
+        let k = format!(
+            "{}{}{}{}.",
+            state[cur_len - 4],
+            state[cur_len - 3],
+            state[cur_len - 2],
+            state[cur_len - 1]
+        );
         next_state.push(rules.next_gen(&k));
-        let k = format!("{}{}{}..", state[cur_len-3], state[cur_len-2], state[cur_len-1]);
+        let k = format!(
+            "{}{}{}..",
+            state[cur_len - 3],
+            state[cur_len - 2],
+            state[cur_len - 1]
+        );
         next_state.push(rules.next_gen(&k));
-        let k = format!("{}{}...", state[cur_len-2], state[cur_len-1]);
+        let k = format!("{}{}...", state[cur_len - 2], state[cur_len - 1]);
         if rules.next_gen(&k) == '#' {
             next_state.push('#');
         }
@@ -88,8 +99,8 @@ fn main() {
         // let ss:String = state.iter().collect();
         // println!("{i} {cur_left} {ss}");
 
-        let ss:String = state.iter().collect();
-       
+        let ss: String = state.iter().collect();
+
         let mut ans = 0;
         for i in 0..state.len() {
             if state[i] == '#' {
@@ -97,9 +108,8 @@ fn main() {
             }
         }
         println!("{i} {cur_left} {ans}");
-        
     }
-    let ss:String = state.iter().collect();
+    let ss: String = state.iter().collect();
     println!("{cur_left} {ss}");
     let mut ans = 0;
     for i in 0..state.len() {
@@ -108,11 +118,10 @@ fn main() {
         }
     }
     println!("{ans}");
-    
 }
 
 #[derive(Debug)]
-struct Rules<>{
+struct Rules {
     rules: HashMap<String, char>,
 }
 

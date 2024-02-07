@@ -1,8 +1,11 @@
 use lazy_static::lazy_static;
 use regex::Regex;
-use std::{fs::read_to_string, collections::{HashMap, HashSet}, hash::Hash};
 use std::cmp::max;
-
+use std::{
+    collections::{HashMap, HashSet},
+    fs::read_to_string,
+    hash::Hash,
+};
 
 fn main() {
     let input = read_to_string("inputs/input23.txt").unwrap();
@@ -36,7 +39,7 @@ struct Bot {
 
 impl Bot {
     fn new(cor: Coordinator, r: u64) -> Self {
-        Self {cor, r}
+        Self { cor, r }
     }
 
     fn dist(&self, other: &Bot) -> u64 {
@@ -61,20 +64,19 @@ struct Coordinator {
 
 impl Coordinator {
     fn new(x: i64, y: i64, z: i64) -> Self {
-        Self {x, y, z,}
+        Self { x, y, z }
     }
 
     fn dist(&self, other: &Coordinator) -> u64 {
         self.x.abs_diff(other.x) + self.y.abs_diff(other.y) + self.z.abs_diff(other.z)
     }
 }
-fn parse_bot(line: &str) -> Bot{
+fn parse_bot(line: &str) -> Bot {
     // pos=<9999306,44070497,46228534>, r=60389933
     lazy_static! {
-        static ref RE: Regex = Regex::new(
-            r"^pos=<(?P<x>[-0-9]+),(?P<y>[-0-9]+),(?P<z>[-0-9]+)>,\s*r=(?P<r>[0-9]+)"
-        )
-        .unwrap();
+        static ref RE: Regex =
+            Regex::new(r"^pos=<(?P<x>[-0-9]+),(?P<y>[-0-9]+),(?P<z>[-0-9]+)>,\s*r=(?P<r>[0-9]+)")
+                .unwrap();
     }
     let caps = RE.captures(line).unwrap();
     let x: i64 = caps["x"].parse().unwrap();
@@ -83,5 +85,3 @@ fn parse_bot(line: &str) -> Bot{
     let r: u64 = caps["r"].parse().unwrap();
     Bot::new(Coordinator::new(x, y, z), r)
 }
-
-

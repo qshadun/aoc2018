@@ -11,8 +11,8 @@ fn main() {
     // program.execute([1, 0, 0, 0, 0, 0]);
     let n2 = 10551309;
     let n1 = 909;
-    let ans1:usize = factors(n1).iter().sum();
-    let ans2:usize = factors(n2).iter().sum();
+    let ans1: usize = factors(n1).iter().sum();
+    let ans2: usize = factors(n2).iter().sum();
     println!("p1 {} p2 {}", ans1, ans2);
 }
 
@@ -46,7 +46,7 @@ impl Program {
         }
     }
 
-    fn execute(&self, start_registers: [usize; 6]) -> [usize; 6]{
+    fn execute(&self, start_registers: [usize; 6]) -> [usize; 6] {
         let mut ip = 0;
         let mut registers = start_registers.clone();
         let mut cnt = 0usize;
@@ -57,7 +57,6 @@ impl Program {
             registers = eval(&instruction.op, registers, instruction.operands).unwrap();
             if old_r0 != registers[0] {
                 println!("{} {:?} old_r0 {}, cnt {}", ip, registers, old_r0, cnt);
-
             }
             ip = registers[self.ip_pos] + 1;
             cnt += 1;
@@ -69,7 +68,7 @@ impl Program {
 #[derive(Debug, Clone)]
 struct Instruction {
     op: String,
-    operands: [usize; 3]
+    operands: [usize; 3],
 }
 
 impl Instruction {
@@ -86,89 +85,135 @@ impl Instruction {
     }
 }
 
-
-const ops: [&str; 16] = ["addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"];
+const ops: [&str; 16] = [
+    "addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri",
+    "gtrr", "eqir", "eqri", "eqrr",
+];
 
 fn eval(op: &str, registers: [usize; 6], operands: [usize; 3]) -> Result<[usize; 6], String> {
     let mut ans = registers.clone();
     let [A, B, C] = operands;
-    if C > 5 { return Err(format!("invalid register index C {C}")); }
+    if C > 5 {
+        return Err(format!("invalid register index C {C}"));
+    }
     match op {
-        "addr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "addr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] + registers[B];
         }
-        "addi" =>  {
-            if A > 5 { return Err(format!("invalid register index C {A}")); }
+        "addi" => {
+            if A > 5 {
+                return Err(format!("invalid register index C {A}"));
+            }
             ans[C] = registers[A] + B;
         }
-        "mulr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "mulr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] * registers[B];
         }
-        "muli" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "muli" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] * B;
         }
-        "banr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "banr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] & registers[B];
         }
-        "bani" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "bani" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] & B;
         }
-        "borr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "borr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = registers[A] | registers[B];
         }
-        "bori" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "bori" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
             ans[C] = registers[A] | B;
         }
-        "setr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "setr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
 
             ans[C] = registers[A];
         }
-        "seti" =>  {
+        "seti" => {
             ans[C] = A;
         }
-        "gtir" =>  {
-
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "gtir" => {
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if A > registers[B] { 1 } else { 0 };
         }
-        "gtri" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "gtri" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
 
             ans[C] = if registers[A] > B { 1 } else { 0 };
         }
-        "gtrr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "gtrr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if registers[A] > registers[B] { 1 } else { 0 };
         }
-        "eqir" =>  {
-
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "eqir" => {
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if A == registers[B] { 1 } else { 0 };
         }
-        "eqri" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
+        "eqri" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
 
             ans[C] = if registers[A] == B { 1 } else { 0 };
         }
-        "eqrr" =>  {
-            if A > 5 { return Err(format!("invalid register index A {A}")); }
-            if B > 5 { return Err(format!("invalid register index B {B}")); }
+        "eqrr" => {
+            if A > 5 {
+                return Err(format!("invalid register index A {A}"));
+            }
+            if B > 5 {
+                return Err(format!("invalid register index B {B}"));
+            }
             ans[C] = if registers[A] == registers[B] { 1 } else { 0 };
         }
-        _ => { return Err(format!("invalid opcode {op}")); }
+        _ => {
+            return Err(format!("invalid opcode {op}"));
+        }
     }
 
     Ok(ans)

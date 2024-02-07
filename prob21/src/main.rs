@@ -9,14 +9,12 @@ fn main() {
     program.execute([0, 0, 0, 0, 0, 0]);
 }
 
-
 #[derive(Debug)]
 struct Program {
     ip_pos: usize,
     instructions: Vec<Instruction>,
     r3_values: Vec<usize>,
     r3_values_set: HashSet<usize>,
-
 }
 
 impl Program {
@@ -36,7 +34,7 @@ impl Program {
         }
     }
 
-    fn execute(&mut self, start_registers: [usize; 6]) -> [usize; 6]{
+    fn execute(&mut self, start_registers: [usize; 6]) -> [usize; 6] {
         let mut ip = start_registers[self.ip_pos];
         if ip > 0 {
             ip += 1;
@@ -44,7 +42,6 @@ impl Program {
         let mut registers = start_registers.clone();
         let mut cnt = 0usize;
         while ip < self.instructions.len() {
-
             if ip == 28 {
                 if self.r3_values_set.contains(&registers[3]) {
                     break;
@@ -56,7 +53,11 @@ impl Program {
             }
             registers[self.ip_pos] = ip;
 
-            eval(&self.instructions[ip].op, &mut registers, &self.instructions[ip].operands);
+            eval(
+                &self.instructions[ip].op,
+                &mut registers,
+                &self.instructions[ip].operands,
+            );
             ip = registers[self.ip_pos] + 1;
             cnt += 1;
         }
@@ -69,7 +70,7 @@ impl Program {
 #[derive(Debug, Clone)]
 struct Instruction {
     op: String,
-    operands: [usize; 3]
+    operands: [usize; 3],
 }
 
 impl Instruction {
@@ -86,73 +87,66 @@ impl Instruction {
     }
 }
 
-
-const ops: [&str; 16] = ["addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri", "gtrr", "eqir", "eqri", "eqrr"];
+const ops: [&str; 16] = [
+    "addr", "addi", "mulr", "muli", "banr", "bani", "borr", "bori", "setr", "seti", "gtir", "gtri",
+    "gtrr", "eqir", "eqri", "eqrr",
+];
 
 fn eval(op: &str, registers: &mut [usize; 6], operands: &[usize; 3]) {
-
     let A = operands[0];
     let B = operands[1];
     let C = operands[2];
     match op {
-        "addr" =>  {
+        "addr" => {
             registers[C] = registers[A] + registers[B];
         }
-        "addi" =>  {
-
+        "addi" => {
             registers[C] = registers[A] + B;
         }
-        "mulr" =>  {
-
+        "mulr" => {
             registers[C] = registers[A] * registers[B];
         }
-        "muli" =>  {
-
+        "muli" => {
             registers[C] = registers[A] * B;
         }
-        "banr" =>  {
-
+        "banr" => {
             registers[C] = registers[A] & registers[B];
         }
-        "bani" =>  {
-
+        "bani" => {
             registers[C] = registers[A] & B;
         }
-        "borr" =>  {
-
+        "borr" => {
             registers[C] = registers[A] | registers[B];
         }
-        "bori" =>  {
-
+        "bori" => {
             registers[C] = registers[A] | B;
         }
-        "setr" =>  {
+        "setr" => {
             registers[C] = registers[A];
         }
-        "seti" =>  {
+        "seti" => {
             registers[C] = A;
         }
-        "gtir" =>  {
+        "gtir" => {
             registers[C] = if A > registers[B] { 1 } else { 0 };
         }
-        "gtri" =>  {
+        "gtri" => {
             registers[C] = if registers[A] > B { 1 } else { 0 };
         }
-        "gtrr" =>  {
-
+        "gtrr" => {
             registers[C] = if registers[A] > registers[B] { 1 } else { 0 };
         }
-        "eqir" =>  {
+        "eqir" => {
             registers[C] = if A == registers[B] { 1 } else { 0 };
         }
-        "eqri" =>  {
+        "eqri" => {
             registers[C] = if registers[A] == B { 1 } else { 0 };
         }
-        "eqrr" =>  {
-
+        "eqrr" => {
             registers[C] = if registers[A] == registers[B] { 1 } else { 0 };
         }
-        _ => { panic!("invalid opcode {op}"); }
+        _ => {
+            panic!("invalid opcode {op}");
+        }
     }
-
 }

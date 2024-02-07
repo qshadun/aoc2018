@@ -14,8 +14,6 @@ fn main() {
             println!("{}", game.scores[turns[0] + delta]);
         }
     }
-
-
 }
 
 #[derive(Debug)]
@@ -25,7 +23,6 @@ struct Game {
     scores: Vec<usize>,
     seen: HashMap<usize, Vec<usize>>,
 }
-
 
 impl Game {
     fn new(input: &str) -> Self {
@@ -77,26 +74,26 @@ impl Game {
         let mut count: Counting = Default::default();
         if r > 0 {
             if c > 0 {
-                count.add_cell(self.matrix[r-1][c-1]);
+                count.add_cell(self.matrix[r - 1][c - 1]);
             }
-            count.add_cell(self.matrix[r-1][c]);
+            count.add_cell(self.matrix[r - 1][c]);
             if c < self.matrix[0].len() - 1 {
-                count.add_cell(self.matrix[r-1][c+1]);
+                count.add_cell(self.matrix[r - 1][c + 1]);
             }
         }
         if c > 0 {
-            count.add_cell(self.matrix[r][c-1]);
+            count.add_cell(self.matrix[r][c - 1]);
         }
         if c < self.matrix[0].len() - 1 {
-            count.add_cell(self.matrix[r][c+1]);
+            count.add_cell(self.matrix[r][c + 1]);
         }
         if r < self.matrix.len() - 1 {
             if c > 0 {
-                count.add_cell(self.matrix[r+1][c-1]);
+                count.add_cell(self.matrix[r + 1][c - 1]);
             }
-            count.add_cell(self.matrix[r+1][c]);
+            count.add_cell(self.matrix[r + 1][c]);
             if c < self.matrix[0].len() - 1 {
-                count.add_cell(self.matrix[r+1][c+1]);
+                count.add_cell(self.matrix[r + 1][c + 1]);
             }
         }
         count
@@ -107,7 +104,6 @@ impl Game {
     }
 
     fn print_score(&self) {
-
         println!("{}", self.get_score());
     }
 }
@@ -135,7 +131,6 @@ struct Counting {
 }
 
 impl Counting {
-
     fn add_cell(&mut self, cell: char) {
         match cell {
             '.' => self.open += 1,
@@ -147,9 +142,27 @@ impl Counting {
 
     fn change_center(&self, center: char) -> char {
         match center {
-            '.' => if self.tree >= 3 { '|' } else { '.' },
-            '|' => if self.lumberyard >= 3 { '#' } else { '|' },
-            '#' => if self.lumberyard >= 1 && self.tree >= 1 { '#' } else { '.' },
+            '.' => {
+                if self.tree >= 3 {
+                    '|'
+                } else {
+                    '.'
+                }
+            }
+            '|' => {
+                if self.lumberyard >= 3 {
+                    '#'
+                } else {
+                    '|'
+                }
+            }
+            '#' => {
+                if self.lumberyard >= 1 && self.tree >= 1 {
+                    '#'
+                } else {
+                    '.'
+                }
+            }
             _ => panic!("unknown char {}", center),
         }
     }

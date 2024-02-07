@@ -1,5 +1,4 @@
-
-use std::{fs::read_to_string, collections::HashMap};
+use std::{collections::HashMap, fs::read_to_string};
 
 #[derive(Debug)]
 struct Rectangle {
@@ -85,8 +84,6 @@ fn part1(grid: &Grid) {
     let cnt = grid.values().filter(|c| **c > 1).count();
     println!("{}", cnt);
 }
-
-
 
 fn part2(rectangles: &[Rectangle], grid: &Grid) {
     for rec in rectangles {
