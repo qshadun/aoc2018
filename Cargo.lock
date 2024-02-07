@@ -112,6 +112,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "prob24"
+version = "0.1.0"
+dependencies = [
+ "lazy_static",
+ "regex",
+]
+
+[[package]]
 name = "prob3"
 version = "0.1.0"
 
